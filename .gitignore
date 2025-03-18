@@ -1,0 +1,7 @@
+Scripts
+.env
+.project
+go.mod
+go.sum
+.dbeaver
+.idea
