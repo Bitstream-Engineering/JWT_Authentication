@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"JWT_Authentication/models"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgtype"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
@@ -29,6 +31,8 @@ func Signup(c *gin.Context) {
 	}
 
 	// Create the user
+	user := models.User{Email: body.Email, Password: string(hash)}
+	result := db.Create(&user)
 
 	// Respond
 
