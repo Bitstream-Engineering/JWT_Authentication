@@ -47,8 +47,20 @@ func Signup(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	//Get the email & password off req body
+	var body struct {
+		Email    string
+		Password string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read body",
+		})
+		return
+	}
 
 	//Look up requested user
+	var user models.User
+	initializers.DB.First(&user, "email = ?", body.Email)
 
 	//Compare sent in pass with saved user pass hash
 
