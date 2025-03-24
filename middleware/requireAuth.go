@@ -3,7 +3,6 @@ package middleware
 import (
 	"JWT_Authentication/initializers"
 	"JWT_Authentication/models"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"log"
@@ -20,7 +19,7 @@ func RequireAuth(c *gin.Context) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 	}
 
-	// Decode/validate it
+	// Parse takes the token string & a function for looking up the key
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
 		return []byte(os.Getenv("SECRET")), nil
@@ -44,13 +43,12 @@ func RequireAuth(c *gin.Context) {
 		}
 
 		// Attach to req
+		c.Set("user", user)
 
 		// Continue
+		c.Next()
 
-		fmt.Println(claims["foo"], claims["nbf"])
 	} else {
 		c.AbortWithStatus(http.StatusUnauthorized)
 	}
-
-	c.Next()
 }
