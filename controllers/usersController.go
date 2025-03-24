@@ -39,7 +39,7 @@ func Signup(c *gin.Context) {
 	result := initializers.DB.Create(&user)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"Error": "Failed to create user",
+			"error": "Failed to create user",
 		})
 		return
 	}
@@ -74,7 +74,6 @@ func Login(c *gin.Context) {
 
 	//Compare sent in pass with saved user pass hash
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid email or password",
@@ -93,7 +92,7 @@ func Login(c *gin.Context) {
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"Error": "Failed to create JWT token",
+			"error": "Failed to create JWT token",
 		})
 		return
 	}
@@ -101,8 +100,18 @@ func Login(c *gin.Context) {
 	fmt.Println(tokenString, err)
 
 	//Send it back
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
+
 	c.JSON(http.StatusOK, gin.H{
 		"token": tokenString,
+	})
+
+}
+
+func Validate(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "I'm logged in",
 	})
 
 }
