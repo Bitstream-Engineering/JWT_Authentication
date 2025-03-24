@@ -7,3 +7,7 @@ Packages used:
 4. jwt-go
 5. godotev
 
+
+N/B - about an unsolved bug where in using postman to test POST - http://127.0.0.1:8080/login
+Returns the error -> "error": "Invalid email or password"
+
