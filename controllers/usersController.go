@@ -90,7 +90,7 @@ func Login(c *gin.Context) {
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString(os.Getenv("SECRET"))
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"Error": "Failed to create JWT token",
