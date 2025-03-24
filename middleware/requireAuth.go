@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"JWT_Authentication/initializers"
+	"JWT_Authentication/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -35,6 +37,11 @@ func RequireAuth(c *gin.Context) {
 		}
 
 		// Find the user with token sub
+		var user models.User
+		initializers.DB.First(&user, claims["sub"])
+		if user.ID == 0 {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
 
 		// Attach to req
 
